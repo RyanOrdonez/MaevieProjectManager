@@ -12,8 +12,15 @@ const projectRoutes = require('./routes/projects');
 // Initialize Express app
 const app = express();
 
+// CORS configuration
+const corsOptions = {
+  origin: ['http://localhost:3000', process.env.FRONTEND_URL || 'https://maevieprojectmanager.netlify.app'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
