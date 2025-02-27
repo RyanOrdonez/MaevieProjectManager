@@ -102,6 +102,16 @@ Maevie is a web app for interior design companies, offering design file manageme
    - Run: `git push heroku main`
    - Set environment variables with: `heroku config:set KEY=VALUE`
 
+## Deployment Details
+
+### Frontend (Netlify)
+- **URL**: [https://maevieprojectmanager.netlify.app](https://maevieprojectmanager.netlify.app)
+- **Repository**: [https://github.com/RyanOrdonez/MaevieProjectManager](https://github.com/RyanOrdonez/MaevieProjectManager)
+
+### Backend (Render)
+- **URL**: [https://maevie-backend.onrender.com](https://maevie-backend.onrender.com)
+- **Database**: PostgreSQL (provided by Render)
+
 ## Future Enhancements (Version 2)
 1. Subscription-based payment model
 2. Advanced file collaboration features
