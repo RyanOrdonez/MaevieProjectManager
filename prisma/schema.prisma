@@ -1,0 +1,179 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// User model for admins, designers, and clients
+model User {
+  id             String     @id @default(uuid())
+  email          String     @unique
+  password       String
+  name           String
+  role           Role       @default(CLIENT)
+  profilePicture String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  // Relations
+  projects       Project[]  @relation("ProjectMembers")
+  ownedProjects  Project[]  @relation("ProjectOwner")
+  messages       Message[]
+  sentContracts  Contract[] @relation("ContractSender")
+  sentInvoices   Invoice[]  @relation("InvoiceSender")
+}
+
+// Role enum for user types
+enum Role {
+  ADMIN
+  DESIGNER
+  CLIENT
+}
+
+// Project model for design projects
+model Project {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  status      ProjectStatus @default(IN_PROGRESS)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  
+  // Relations
+  owner       User         @relation("ProjectOwner", fields: [ownerId], references: [id])
+  ownerId     String
+  members     User[]       @relation("ProjectMembers")
+  designFiles DesignFile[]
+  boards      Board[]
+  contracts   Contract[]
+  questionnaires Questionnaire[]
+  invoices    Invoice[]
+  messages    Message[]
+}
+
+// Project status enum
+enum ProjectStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  ON_HOLD
+  COMPLETED
+}
+
+// DesignFile model for uploaded design files
+model DesignFile {
+  id          String   @id @default(uuid())
+  name        String
+  fileUrl     String
+  fileType    String
+  description String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   String
+}
+
+// Board model for project boards
+model Board {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   String
+}
+
+// Contract model for legal documents
+model Contract {
+  id          String   @id @default(uuid())
+  title       String
+  fileUrl     String
+  status      ContractStatus @default(DRAFT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   String
+  sender      User     @relation("ContractSender", fields: [senderId], references: [id])
+  senderId    String
+}
+
+// Contract status enum
+enum ContractStatus {
+  DRAFT
+  SENT
+  SIGNED
+  REJECTED
+}
+
+// Questionnaire model for client questionnaires
+model Questionnaire {
+  id          String   @id @default(uuid())
+  title       String
+  questions   Json
+  answers     Json?
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   String
+}
+
+// Invoice model for billing
+model Invoice {
+  id          String   @id @default(uuid())
+  title       String
+  amount      Float
+  dueDate     DateTime
+  status      InvoiceStatus @default(PENDING)
+  fileUrl     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   String
+  sender      User     @relation("InvoiceSender", fields: [senderId], references: [id])
+  senderId    String
+}
+
+// Invoice status enum
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+// Message model for client-designer communication
+model Message {
+  id          String   @id @default(uuid())
+  content     String
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  sender      User     @relation(fields: [senderId], references: [id])
+  senderId    String
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   String
+}

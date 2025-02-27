@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 600 500">
+  <!-- MAEVIE Text -->
+  <g transform="translate(20, 120)">
+    <path d="M 30,0 L 60,0 L 100,90 L 140,0 L 170,0 L 170,150 L 140,150 L 140,50 L 100,140 L 100,140 L 60,50 L 60,150 L 30,150 Z" fill="#333333"/>
+    <path d="M 190,0 L 270,0 L 310,50 L 350,0 L 430,0 L 350,100 L 350,150 L 310,150 L 310,100 L 190,0 Z" fill="#333333"/>
+    <path d="M 450,0 L 550,0 L 550,30 L 490,30 L 490,60 L 540,60 L 540,90 L 490,90 L 490,120 L 550,120 L 550,150 L 450,150 Z" fill="#333333"/>
+    <path d="M 570,0 L 600,0 L 600,150 L 570,150 Z" fill="#333333"/>
+    <path d="M 620,0 L 700,0 L 740,50 L 780,0 L 860,0 L 780,100 L 780,150 L 740,150 L 740,100 L 620,0 Z" fill="#333333"/>
+  </g>
+  
+  <!-- Decorative Leaf Element -->
+  <g transform="translate(300, 300)">
+    <path d="M-80,0 C-60,-40 -20,-70 20,-80 C30,-30 10,10 -30,30 C-50,10 -70,-10 -80,0 Z" fill="none" stroke="#D3B6A5" stroke-width="2"/>
+    <path d="M-40,-20 C-20,-60 20,-80 60,-60 C40,-10 0,20 -40,20 C-50,0 -50,-10 -40,-20 Z" fill="none" stroke="#D3B6A5" stroke-width="2"/>
+    <path d="M20,-40 C60,-60 100,-40 120,0 C70,10 30,0 0,-30 C0,-40 10,-40 20,-40 Z" fill="none" stroke="#D3B6A5" stroke-width="2"/>
+    <path d="M0,0 C40,-10 70,10 80,50 C30,50 0,30 -20,-10 C-10,-10 0,0 0,0 Z" fill="none" stroke="#D3B6A5" stroke-width="2"/>
+    <path d="M-40,30 C-20,70 20,90 60,70 C30,30 0,10 -40,-10 C-50,10 -50,20 -40,30 Z" fill="none" stroke="#D3B6A5" stroke-width="2"/>
+  </g>
+</svg>
