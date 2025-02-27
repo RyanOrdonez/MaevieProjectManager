@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -70,7 +69,7 @@ const ProjectDetails = () => {
     };
 
     fetchProjectDetails();
-  }, [id]);
+  }, [id, mockProject]);
 
   const handleDeleteProject = async () => {
     if (window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
