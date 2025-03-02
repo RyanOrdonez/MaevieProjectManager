@@ -14,7 +14,7 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://localhost:3000', process.env.FRONTEND_URL || 'https://maevieprojectmanager.netlify.app'],
+  origin: ['http://localhost:3000', process.env.FRONTEND_URL || 'https://houseofmaevie.netlify.app'],
   credentials: true,
   optionsSuccessStatus: 200
 };
