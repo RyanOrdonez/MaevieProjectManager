@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maevie Admin Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 32px;
+            color: #555;
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            word-wrap: break-word;
+        }
+        .error {
+            color: #ff0000;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">MAEVIE</div>
+    <h1>Admin Login</h1>
+    
+    <div class="container">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" value="admin@maevie.com">
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" value="admin123">
+        </div>
+        
+        <button onclick="login()">Login</button>
+        
+        <div id="status" class="hidden">
+            <h3>Login Status:</h3>
+            <p id="statusMessage"></p>
+        </div>
+        
+        <div id="responseContainer" class="hidden">
+            <h3>Response:</h3>
+            <pre id="response"></pre>
+        </div>
+        
+        <div id="errorContainer" class="hidden">
+            <h3>Error Details:</h3>
+            <pre id="error" class="error"></pre>
+        </div>
+    </div>
+    
+    <script>
+        // API endpoints
+        const API_URL = 'https://maevie-backend.onrender.com/api';
+        
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Show status
+            const statusContainer = document.getElementById('status');
+            const statusMessage = document.getElementById('statusMessage');
+            statusContainer.classList.remove('hidden');
+            statusMessage.innerHTML = 'Logging in... Please wait';
+            statusMessage.className = '';
+            
+            // Hide previous results
+            document.getElementById('responseContainer').classList.add('hidden');
+            document.getElementById('errorContainer').classList.add('hidden');
+            
+            try {
+                console.log('Attempting to login with:', { email, password });
+                
+                // Make login request
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                // Show response
+                const responseContainer = document.getElementById('responseContainer');
+                const responseElement = document.getElementById('response');
+                responseContainer.classList.remove('hidden');
+                
+                if (response.ok) {
+                    statusMessage.innerHTML = 'Login successful! You are now authenticated.';
+                    statusMessage.className = 'success';
+                    
+                    // Store token in localStorage
+                    localStorage.setItem('maevieToken', data.token);
+                    localStorage.setItem('maevieUser', JSON.stringify(data.user));
+                    
+                    responseElement.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    statusMessage.innerHTML = `Login failed: ${data.message || 'Unknown error'}`;
+                    statusMessage.className = 'error';
+                    responseElement.textContent = JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                // Show error
+                statusMessage.innerHTML = 'An error occurred during login. See details below.';
+                statusMessage.className = 'error';
+                
+                const errorContainer = document.getElementById('errorContainer');
+                const errorElement = document.getElementById('error');
+                errorContainer.classList.remove('hidden');
+                errorElement.textContent = error.toString();
+            }
+        }
+    </script>
+</body>
+</html>

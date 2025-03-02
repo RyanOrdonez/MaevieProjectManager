@@ -59,6 +59,7 @@ router.post('/register', async (req, res) => {
 // Login user
 router.post('/login', async (req, res) => {
   try {
+    console.log('Login attempt:', req.body);
     const { email, password } = req.body;
 
     // Check if user exists
@@ -67,19 +68,25 @@ router.post('/login', async (req, res) => {
     });
 
     if (!user) {
+      console.log('User not found:', email);
       return res.status(400).json({ message: 'Invalid credentials' });
     }
+
+    console.log('User found:', user.email, 'Password hash length:', user.password.length);
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log('Password mismatch for user:', email);
       return res.status(400).json({ message: 'Invalid credentials' });
     }
+
+    console.log('Password match successful for user:', email);
 
     // Create JWT token
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'default_jwt_secret_for_development',
       { expiresIn: '1d' }
     );
 
@@ -94,7 +101,7 @@ router.post('/login', async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
@@ -132,6 +139,50 @@ router.get('/me', async (req, res) => {
   } catch (error) {
     console.error('Auth error:', error);
     res.status(401).json({ message: 'Token is not valid' });
+  }
+});
+
+// Debug endpoint for checking if authentication system is working
+router.get('/debug', async (req, res) => {
+  try {
+    // Count users in system
+    const userCount = await prisma.user.count();
+    
+    // Get admin user (without sending password)
+    const adminUser = await prisma.user.findFirst({
+      where: { role: 'ADMIN' },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
+      }
+    });
+    
+    // Check JWT secret
+    const jwtSecretStatus = process.env.JWT_SECRET 
+      ? 'JWT_SECRET is set (length: ' + process.env.JWT_SECRET.length + ')' 
+      : 'JWT_SECRET is NOT set';
+    
+    // Return debug info
+    res.json({
+      status: 'Authentication system running',
+      environment: process.env.NODE_ENV || 'development',
+      userCount,
+      adminUser: adminUser || 'No admin user found',
+      jwtSecretStatus,
+      frontendUrl: process.env.FRONTEND_URL || 'Not set',
+      databaseConnected: true,
+      serverTime: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('Debug endpoint error:', error);
+    res.status(500).json({ 
+      status: 'Error checking authentication system',
+      error: error.message,
+      stack: process.env.NODE_ENV === 'production' ? null : error.stack
+    });
   }
 });
 
