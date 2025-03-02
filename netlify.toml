@@ -5,6 +5,9 @@
 
 [build.environment]
   NODE_VERSION = "18.18.0"
+  REACT_APP_API_URL = "https://maevie-backend.onrender.com/api"
+  CI = "false"
+  DISABLE_ESLINT_PLUGIN = "true"
 
 [[redirects]]
   from = "/*"
